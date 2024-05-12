@@ -24,8 +24,14 @@ def summarize_lines(my_df):
     '''
     # TODO : Modify the dataframe, removing the line content and replacing
     # it by line count and percent per player per act
+    df = my_df.loc[:, ['Act', 'Player', 'Line']].groupby(['Act', 'Player']).count().reset_index()
+    df.columns = ['Act', 'Player', 'LineCount']
+    total_line_count = df.groupby('Act')['LineCount'].sum()
+    df['LinePercent'] = (df['LineCount'] / df['Act'].map(total_line_count))  *100
+    print(total_line_count)
+    print(df[df['Act'] == 1])
+    
     return my_df
-
 
 def replace_others(my_df):
     '''
