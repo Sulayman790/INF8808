@@ -26,5 +26,8 @@ def get_hover_template(name, mode):
             The hover template with the elements descibed above
     '''
     # TODO: Generate and return the over template
-
-    return ''
+    if mode == MODES['count']:
+        template = "<b><br>%s</br></b><br><br>%%{y} lines<extra></extra>"% name
+    else: template = "<b>%s<br></b><br>%%{y:.2f} %% of lines<extra></extra>"% name    
+    
+    return template
