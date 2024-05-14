@@ -8,6 +8,7 @@ import plotly.io as pio
 
 from hover_template import get_hover_template
 from modes import MODES, MODE_TO_COLUMN
+from template import THEME
 
 
 def init_figure():
