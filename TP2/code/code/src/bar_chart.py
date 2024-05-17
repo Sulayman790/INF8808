@@ -48,26 +48,17 @@ def draw(fig, data, mode):
     '''
     fig = go.Figure(fig)  # conversion back to Graph Object
     # TODO : Update the figure's data according to the selected mode
-    color_dic = {'Romeo' : 0,
-                 'Juliet': 1, 
-                 'Nurse':2, 
-                 'Mercutio':3, 
-                 'Benvolio':4, 
-                 'Others':5 }
-    data['Color'] = [THEME['bar_colors'][color_dic[x]] for x in data['Player']]
+    fig.data = []
     
-    fig.data=[]
-    if mode ==  MODES['count']:
-        for player, group in data.groupby('Player'):
-            fig.add_trace(go.Bar(x=group["Act"], y=group["Count"], name=player, marker_color = group['Color'], 
-            # * hovertext part : *
-            hovertemplate = get_hover_template(player, mode), hoverlabel= dict(bgcolor = 'white', font_size = 24, font_family = "Grenze Gotish", font_color = 'black')))
-    else: 
-        for player, group in data.groupby('Player'):
-            fig.add_trace(go.Bar(x=group["Act"], y=group["Percentile"], name=player, marker_color = group['Color'],
-            # * hovertext part : *
-            hovertemplate = get_hover_template(player, mode), hoverlabel= dict(bgcolor = 'white', font_size = 24, font_family = "Grenze Gotish", font_color = 'black') ))
-    return fig
+    for player, player_data in data.groupby(by='Player'):
+        fig.add_trace(go.Bar(name=player, x=player_data['Act'], 
+                             y=player_data[MODE_TO_COLUMN[mode]], 
+                             # hovertext part :
+                             hovertemplate=get_hover_template(player, mode)))
+
+
+    fig.update_layout(barmode='stack', xaxis= {'tickprefix': 'Act '})
+    return update_y_axis(fig, mode)
 
 
 def update_y_axis(fig, mode):
