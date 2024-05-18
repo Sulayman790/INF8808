@@ -8,6 +8,7 @@ import plotly.io as pio
 
 from hover_template import get_hover_template
 from modes import MODES, MODE_TO_COLUMN
+from template import THEME
 
 
 def init_figure():
@@ -24,9 +25,11 @@ def init_figure():
     # TODO : Update the template to include our new theme and set the title
 
     fig.update_layout(
+        title = "Lines per act", 
         template=pio.templates['simple_white'],
         dragmode=False,
-        barmode='relative'
+        barmode='relative',
+        font=dict(color="grey")
     )
 
     return fig
@@ -45,7 +48,17 @@ def draw(fig, data, mode):
     '''
     fig = go.Figure(fig)  # conversion back to Graph Object
     # TODO : Update the figure's data according to the selected mode
-    return fig
+    fig.data = []
+    
+    for player, player_data in data.groupby(by='Player'):
+        fig.add_trace(go.Bar(name=player, x=player_data['Act'], 
+                             y=player_data[MODE_TO_COLUMN[mode]], 
+                             # hovertext part :
+                             hovertemplate=get_hover_template(player, mode)))
+
+
+    fig.update_layout(barmode='stack', xaxis= {'tickprefix': 'Act '})
+    return update_y_axis(fig, mode)
 
 
 def update_y_axis(fig, mode):
@@ -59,3 +72,5 @@ def update_y_axis(fig, mode):
             The updated figure
     '''
     # TODO : Update the y axis title according to the current mode
+    fig.update_layout(yaxis_title='Lines (%)' if mode == MODES['percent'] else 'Lines (Count)')
+    return fig
