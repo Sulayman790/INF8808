@@ -25,9 +25,7 @@ def get_hover_template(name, mode):
         Returns:
             The hover template with the elements descibed above
     '''
-    # TODO: Generate and return the over template
-  
-    # return template
+   
     title = '<span style="font-family: Grenze Gotisch; font-size: 24px; color: black;">%{x}</span>'
     player_name = '<b>Player :</b> {player_name}'.format(player_name=name)
 

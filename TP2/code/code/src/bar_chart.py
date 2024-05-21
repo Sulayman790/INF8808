@@ -22,7 +22,6 @@ def init_figure():
     '''
     fig = go.Figure()
 
-    # TODO : Update the template to include our new theme and set the title
 
     fig.update_layout(
         title = "Lines per act", 
@@ -47,7 +46,7 @@ def draw(fig, data, mode):
             fig: The figure comprising the drawn bar chart
     '''
     fig = go.Figure(fig)  # conversion back to Graph Object
-    # TODO : Update the figure's data according to the selected mode
+
     fig.data = []
     
     for player, player_data in data.groupby(by='Player'):
@@ -71,6 +70,6 @@ def update_y_axis(fig, mode):
         Returns: 
             The updated figure
     '''
-    # TODO : Update the y axis title according to the current mode
+    
     fig.update_layout(yaxis_title='Lines (%)' if mode == MODES['percent'] else 'Lines (Count)')
     return fig

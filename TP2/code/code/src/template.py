@@ -45,7 +45,7 @@ def create_template():
         the THEME dictionary.
 
     '''
-    # TODO : Define a theme as defined above
+    
     pio.templates['my_theme'] = go.layout.Template(
         layout=go.Layout(
             font=dict(

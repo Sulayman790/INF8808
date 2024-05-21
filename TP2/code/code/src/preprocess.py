@@ -22,13 +22,11 @@ def summarize_lines(my_df):
             The modified pandas dataframe containing the
             information described above.
     '''
-    # TODO : Modify the dataframe, removing the line content and replacing
-
-    # it by line count and percent per player per act
-    df = my_df.loc[:, ['Act', 'Player', 'Line']].groupby(['Act', 'Player']).count().reset_index()
-    df.columns = ['Act', 'Player', 'LineCount']
-    total_line_count = df.groupby('Act')['LineCount'].sum()
-    df['LinePercent'] = (df['LineCount'] / df['Act'].map(total_line_count)) * 100
+    player_appearances = my_df.groupby(['Act', 'Player']).size().reset_index(name='PlayerLine')
+    player_appearances.columns = ['Act', 'Player', 'LineCount']
+    total_line_count = my_df.groupby('Act')['PlayerLine'].size().reset_index(name='TotalLineCount')
+    df = pd.merge(player_appearances, total_line_count, on='Act')
+    df['LinePercent'] = (df['LineCount'] / df['TotalLineCount']) * 100
 
     return df
 
@@ -55,22 +53,23 @@ def replace_others(my_df):
             The df with all players not in the top
             5 for the play grouped as 'OTHER'
     '''
-    # TODO : Replace players in each act not in the top 5 by a
-    # new player 'OTHER' which sums their line count and percentage
+  
+    top_5_players = my_df.groupby('Player')['LineCount'].sum().sort_values(ascending=False).head(5).reset_index()
+    mask = my_df['Player'].isin(top_5_players['Player'])
+    player_data = my_df[mask]
     
-    top_5_players_per_act = my_df.groupby('Act').apply(lambda x: x.nlargest(5, 'LineCount')).reset_index(drop=True)    
+    total_line_counts_per_act = my_df.groupby('Act')['LineCount'].sum().reset_index()
+    total_line_counts_per_act.columns = ['Act', 'TotalLineCount']
+ 
+    other_data = my_df[~mask]
+    other_line_counts_per_act = other_data.groupby('Act')['LineCount'].sum().reset_index()
+    other_line_counts_per_act['Player'] = 'OTHER'
+    other_line_counts_per_act['LinePercent'] = (other_line_counts_per_act['LineCount'] / total_line_counts_per_act['TotalLineCount']) * 100
     
-    total_line_count = my_df.groupby('Act')['LineCount'].sum().reset_index()   
-    mask = ~my_df.set_index(['Act', 'Player']).index.isin(top_5_players_per_act.set_index(['Act', 'Player']).index)
-    other_lines = my_df[mask]
-    other_line_counts = other_lines.groupby('Act')['LineCount'].sum().reset_index()
-    other_line_counts['Player'] = 'OTHER'
-    other_line_counts['LinePercent'] = (other_line_counts['LineCount'] / total_line_count['LineCount']) * 100
-    other_line_counts = other_line_counts[['Act', 'Player', 'LineCount', 'LinePercent']]
-    
-    df = pd.concat([top_5_players_per_act, other_line_counts], ignore_index=True)
-    result_df = df.sort_values(by=['Act', 'LineCount'])
-    return result_df
+    my_df = pd.concat(
+        [player_data, other_line_counts_per_act], ignore_index=True)
+    my_df = my_df.drop('TotalLineCount', axis=1)
+    return my_df
 
 
 def clean_names(my_df):
@@ -81,6 +80,6 @@ def clean_names(my_df):
         Returns:
             The df with formatted names
     '''
-    # TODO : Clean the player names
+
     my_df['Player'] = my_df['Player'].str.title()
     return my_df
