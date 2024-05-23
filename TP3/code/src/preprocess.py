@@ -14,6 +14,7 @@ def convert_dates(dataframe):
             The processed dataframe with datetime-formatted dates.
     '''
     # TODO : Convert dates
+    dataframe['Date_Plantation'] = pd.to_datetime(dataframe['Date_Plantation'])
     return dataframe
 
 
@@ -30,7 +31,8 @@ def filter_years(dataframe, start, end):
             The dataframe filtered by date.
     '''
     # TODO : Filter by dates
-    return dataframe
+    dataframe = dataframe[(dataframe['Date_Plantation'].dt.year >= start) & (dataframe['Date_Plantation'].dt.year <= end)]
+    return dataframe.sort_values(by='Date_Plantation')
 
 
 def summarize_yearly_counts(dataframe):
@@ -46,8 +48,13 @@ def summarize_yearly_counts(dataframe):
             containing the counts of planted
             trees for each neighborhood each year.
     '''
-    # TODO : Summarize df
-    return None
+    
+    dataframe['Year'] = dataframe['Date_Plantation'].dt.year
+    
+    grouped_dataframe = dataframe.groupby(['Arrond', 'Arrond_Nom', 'Year']).size().reset_index(name='Counts')
+    
+    result = pd.merge(dataframe, grouped_dataframe, on=['Arrond', 'Arrond_Nom', 'Year'])
+    return result
 
 
 def restructure_df(yearly_df):
@@ -69,7 +76,8 @@ def restructure_df(yearly_df):
             The restructured dataframe
     '''
     # TODO : Restructure df and fill empty cells with 0
-    return None
+    yearly_df = yearly_df.pivot_table(index='Arrond_Nom', columns='Year', values='Counts', fill_value=0)
+    return yearly_df
 
 
 def get_daily_info(dataframe, arrond, year):
@@ -87,4 +95,8 @@ def get_daily_info(dataframe, arrond, year):
             neighborhood and year.
     '''
     # TODO : Get daily tree count data and return
-    return None
+
+    filtered_df = dataframe[(dataframe['Arrond'] == arrond) & (dataframe['Date_Plantation'].dt.year == year)]
+    
+    daily_counts = filtered_df.groupby('Date_Plantation').size().reset_index(name='Counts')
+    return daily_counts
