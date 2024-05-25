@@ -96,7 +96,11 @@ def get_daily_info(dataframe, arrond, year):
     '''
     # TODO : Get daily tree count data and return
 
-    filtered_df = dataframe[(dataframe['Arrond'] == arrond) & (dataframe['Date_Plantation'].dt.year == year)]
+    filtered_df =  dataframe[(dataframe["Date_Plantation"].dt.year == year) & (dataframe["Arrond_Nom"] == arrond)]
     
     daily_counts = filtered_df.groupby('Date_Plantation').size().reset_index(name='Counts')
+    
+
+    daily_counts = daily_counts.set_index("Date_Plantation").asfreq("d", fill_value=0).reset_index()
     return daily_counts
+
