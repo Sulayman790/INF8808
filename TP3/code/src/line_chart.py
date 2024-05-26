@@ -89,7 +89,7 @@ def get_figure(line_data, arrond, year):
     )
 
     fig.update_traces(hovertemplate=hover_template.get_linechart_hover_template())
-    fig.update_xaxes(tickformat='%d-%b')
+    fig.update_xaxes(tickformat='%d %b')
 
     if len(line_data) == 1:
         fig.update_traces(mode='markers')

@@ -33,7 +33,7 @@ def get_linechart_hover_template():
     '''
     # TODO : Define and return the hover template
 
-    date = "<span style=\"font-family:'Roboto Slab'; font-weight: bold\">Date: </span><span style=\"font-family:'Roboto'; font-weight: normal\">%{x}</span><br>"
-    trees = "<span style=\"font-family:'Roboto Slab'; font-weight: bold\">Trees: </span><span style=\"font-family:'Roboto'; font-weight: normal\">%{y}</span><br>"
+    date = "<span style=\"font-family:'Roboto Slab'; font-weight: bold\">Date : </span><span style=\"font-family:'Roboto'; font-weight: normal\">%{x}</span><br>"
+    trees = "<span style=\"font-family:'Roboto Slab'; font-weight: bold\">Trees : </span><span style=\"font-family:'Roboto'; font-weight: normal\">%{y}</span><br>"
 
     return date + trees + "<extra></extra>"
