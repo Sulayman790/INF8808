@@ -85,7 +85,7 @@ def get_figure(line_data, arrond, year):
     fig.update_layout(
         xaxis_title='',
         yaxis_title='Trees',
-        title=f'Trees planted in {arrond} in {year[0:4]}',  # Display the year only
+        title=f'Trees planted in {arrond} in {year[0:4]}',  
     )
 
     fig.update_traces(hovertemplate=hover_template.get_linechart_hover_template())
