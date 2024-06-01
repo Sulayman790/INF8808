@@ -13,7 +13,7 @@ def round_decimals(my_df):
             The dataframe with rounded numbers
     '''
     # TODO : Round the dataframe
-    return None
+    return my_df.round(2)
 
 
 def get_range(col, df1, df2):
@@ -29,8 +29,15 @@ def get_range(col, df1, df2):
             The minimum and maximum values across the two dataframes
     '''
     # TODO : Get the range from the dataframes
-    return []
+    df1_min = df1[col].min()
+    df2_min = df2[col].min()
+    df1_max = df1[col].max()
+    df2_max = df2[col].max()
 
+    min_df = min(df1_min, df2_min)
+    max_df = max(df1_max, df2_max)
+
+    return [min_df, max_df]
 
 def combine_dfs(df1, df2):
     '''
@@ -48,7 +55,11 @@ def combine_dfs(df1, df2):
             original dataframe.
     '''
     # TODO : Combine the two dataframes
-    return None
+    df1['Year'] = 2000
+    df2['Year'] = 2015
+
+    df = df1.append(df2)
+    return df
 
 
 def sort_dy_by_yr_continent(my_df):
@@ -61,4 +72,7 @@ def sort_dy_by_yr_continent(my_df):
             The sorted dataframe.
     '''
     # TODO : Sort the dataframe
-    return None
+   
+    my_df = my_df.sort_values(['Year', 'Continent'])
+
+    return my_df
